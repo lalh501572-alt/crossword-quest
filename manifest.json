@@ -1,0 +1,10 @@
+{
+  "name": "Crossword Quest",
+  "short_name": "Crossword",
+  "description": "Play Crossword Quest puzzle levels",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb"
+}

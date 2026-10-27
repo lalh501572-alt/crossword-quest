@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#172554">
+<title>Crossword Quest — 50 Levels</title>
+<style>
+:root{--navy:#172554;--blue:#2563eb;--sky:#dbeafe;--ink:#172033;--muted:#64748b;--bg:#f4f7fb;--white:#fff;--green:#15803d;--gold:#f59e0b}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(135deg,#172554,#2563eb);color:#fff;padding:22px 18px 26px;border-radius:0 0 25px 25px}
+.top{max-width:760px;margin:auto}.brand{font-size:13px;letter-spacing:2px;text-transform:uppercase;opacity:.8;font-weight:800}
+h1{font-size:clamp(27px,7vw,40px);margin:7px 0 4px}.sub{opacity:.88;font-size:14px}
+.wrap{max-width:760px;margin:18px auto;padding:0 14px 35px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:-3px}
+.stat,.panel{background:white;border:1px solid #e5eaf3;border-radius:16px;padding:13px;box-shadow:0 5px 20px #0f172a08}
+.stat b{display:block;font-size:21px;color:var(--navy)}.stat span{font-size:11px;color:var(--muted)}
+.toolbar{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:18px 0 12px;flex-wrap:wrap}
+h2{font-size:19px;margin:0}.small{font-size:12px;color:var(--muted)}
+button{border:0;border-radius:11px;padding:11px 14px;font:inherit;font-weight:700;cursor:pointer}
+.primary{background:var(--blue);color:white}.secondary{background:var(--sky);color:var(--navy)}.quiet{background:#eef2f7;color:#334155}
+button:disabled{opacity:.45;cursor:not-allowed}
+#levels{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.level{padding:13px 3px;background:white;border:1px solid #e2e8f0;border-radius:12px;color:var(--navy);font-weight:800}
+.level.done{background:#dcfce7;border-color:#86efac;color:#166534}.level.locked{opacity:.4}
+#game{display:none}.gamehead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.progress{height:7px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin:12px 0 17px}.bar{height:100%;width:0;background:#22c55e;transition:width .2s}
+.wordcard{padding:15px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:13px;margin:10px 0}
+.cluelabel{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:800}
+.clue{font-size:16px;font-weight:700;margin:5px 0 12px}
+.letters{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.tile{width:clamp(26px,7vw,39px);height:clamp(31px,8vw,44px);border:1px solid #cbd5e1;background:white;border-radius:7px;text-align:center;font-size:18px;font-weight:800;color:var(--navy);display:flex;align-items:center;justify-content:center}
+.tile.filled{background:#dbeafe;border-color:#60a5fa}.tile.fixed{background:#dcfce7;border-color:#4ade80}
+.answer{width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:11px;font-size:17px;text-transform:uppercase;letter-spacing:2px;outline:none}
+.answer:focus{border-color:#2563eb;box-shadow:0 0 0 3px #bfdbfe}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.actions button{flex:1;min-width:100px}
+.feedback{min-height:25px;font-size:13px;font-weight:700;margin-top:10px}.good{color:var(--green)}.bad{color:#b91c1c}
+.note{font-size:12px;color:var(--muted);line-height:1.5;margin-top:16px}
+footer{text-align:center;color:var(--muted);font-size:12px;margin-top:24px}
+@media(min-width:560px){#levels{grid-template-columns:repeat(10,minmax(0,1fr))}.panel{padding:20px}}
+</style>
+</head>
+<body>
+<header><div class="top"><div class="brand">🧩 Crossword Quest</div><h1>50 levels. One sharp mind.</h1><div class="sub">Solve the clues, unlock new challenges, and build your streak.</div></div></header>
+<main class="wrap">
+<div class="stats">
+ <div class="stat"><b id="statLevel">1 / 50</b><span>Current level</span></div>
+ <div class="stat"><b id="statScore">0</b><span>Points earned</span></div>
+ <div class="stat"><b id="statDone">0</b><span>Levels completed</span></div>
+</div>
+<section id="home">
+ <div class="toolbar"><div><h2>Choose a level</h2><div class="small">Complete a level to unlock the next one.</div></div><button class="quiet" id="resetBtn">Reset game</button></div>
+ <div id="levels"></div>
+ <div class="note">This free version saves progress on this device. It works in your browser and does not need an account.</div>
+</section>
+<section id="game" class="panel">
+ <div class="gamehead"><button class="quiet" id="backBtn">← Levels</button><div style="text-align:right"><div class="small" id="difficulty">BEGINNER</div><h2 id="levelTitle">Level 1</h2></div></div>
+ <div class="progress"><div class="bar" id="progressBar"></div></div>
+ <div id="puzzle"></div>
+ <div class="actions"><button class="secondary" id="hintBtn">💡 Hint</button><button class="quiet" id="revealBtn">Reveal answer</button><button class="primary" id="checkBtn">Check answers</button></div>
+ <div class="feedback" id="feedback" aria-live="polite"></div>
+ <div class="actions"><button class="quiet" id="prevBtn">Previous</button><button class="primary" id="nextBtn">Next level →</button></div>
+</section>
+<footer>Crossword Quest • Free to play</footer>
+</main>
+<script>
+const raw = [
+[["A young dog","PUPPY"],["A bright object in the night sky","STAR"]],
+[["The opposite of hot","COLD"],["You read this","BOOK"]],
+[["An animal that says meow","CAT"],["Frozen water","ICE"]],
+[["A yellow fruit monkeys are known for eating","BANANA"],["You wear these on your feet","SHOES"]],
+[["A place where students learn","SCHOOL"],["The planet we live on","EARTH"]],
+[["A vehicle with two wheels","BICYCLE"],["A meal eaten in the morning","BREAKFAST"]],
+[["A person who treats sick people","DOCTOR"],["Water falling from clouds","RAIN"]],
+[["A place where books are borrowed","LIBRARY"],["The opposite of victory","DEFEAT"]],
+[["A shape with three sides","TRIANGLE"],["A person who flies an aircraft","PILOT"]],
+[["The natural home of an animal","HABITAT"],["A huge body of salt water","OCEAN"]],
+[["A device used to take photographs","CAMERA"],["The study of living things","BIOLOGY"]],
+[["A place where aircraft land and take off","AIRPORT"],["The force that pulls objects toward Earth","GRAVITY"]],
+[["A person who writes books","AUTHOR"],["A word with the opposite meaning","ANTONYM"]],
+[["The process by which plants make food using sunlight","PHOTOSYNTHESIS"],["A person who studies the past","HISTORIAN"]],
+[["A person who designs buildings","ARCHITECT"],["The instrument used to measure temperature","THERMOMETER"]],
+[["A place where scientific experiments are conducted","LABORATORY"],["The study of Earth's physical features","GEOGRAPHY"]],
+[["A word that imitates a sound","ONOMATOPOEIA"],["The movement of people from one place to another","MIGRATION"]],
+[["The science of the universe and celestial objects","ASTRONOMY"],["A person who speaks several languages","POLYGLOT"]],
+[["A government ruled by the people","DEMOCRACY"],["The gradual change in inherited traits across generations","EVOLUTION"]],
+[["The branch of mathematics dealing with shapes and space","GEOMETRY"],["The art of effective public speaking","RHETORIC"]],
+[["A person who studies ancient societies through objects","ARCHAEOLOGIST"],["The ability to understand another person's feelings","EMPATHY"]],
+[["A word with the same spelling as another but a different meaning","HOMONYM"],["The study of the origin of words","ETYMOLOGY"]],
+[["The belief that knowledge comes primarily from experience","EMPIRICISM"],["A government controlled by a small group","OLIGARCHY"]],
+[["The fear of confined spaces","CLAUSTROPHOBIA"],["The study of how people use limited resources","ECONOMICS"]],
+[["A statement that appears contradictory but may be true","PARADOX"],["A person who studies inscriptions on monuments","EPIGRAPHER"]],
+[["The coexistence of opposing ideas or forces","DUALITY"],["Reasoning from general rules to specific conclusions","DEDUCTION"]],
+[["A system of writing using symbols for sounds","ALPHABET"],["The study of language structure and meaning","LINGUISTICS"]],
+[["An indirect reference to a person, event or text","ALLUSION"],["The belief that events are predetermined","FATALISM"]],
+[["The excessive use of unnecessary words","VERBOSITY"],["A person who questions accepted beliefs","SKEPTIC"]],
+[["The study of knowledge and justified belief","EPISTEMOLOGY"],["A short statement expressing a general truth","APHORISM"]],
+[["The study of the nature of reality and existence","ONTOLOGY"],["A word formed from the initial letters of a phrase","ACRONYM"]],
+[["A person who compiles a dictionary","LEXICOGRAPHER"],["Using a part to represent the whole","SYNECDOCHE"]],
+[["The practice of interpreting texts","HERMENEUTICS"],["A conclusion drawn from evidence and reasoning","INFERENCE"]],
+[["The art of speaking persuasively","ELOQUENCE"],["A statement that is true by definition","TAUTOLOGY"]],
+[["The study of signs and symbols","SEMIOTICS"],["A mild expression used instead of a harsh one","EUPHEMISM"]],
+[["A subtle difference in meaning or expression","NUANCE"],["A person who lives in solitude","RECLUSE"]],
+[["A brief, unexpected insight or revelation","EPIPHANY"],["Giving human traits to nonhuman things","PERSONIFICATION"]],
+[["The study of language across social groups","SOCIOLINGUISTICS"],["A situation with an unavoidable, frustrating dilemma","CATCH22"]],
+[["The use of deliberately exaggerated statements","HYPERBOLE"],["A word or phrase that reads the same backward and forward","PALINDROME"]],
+[["The branch of philosophy concerned with beauty and artistic taste","AESTHETICS"],["A short, witty statement expressing a pointed observation","EPIGRAM"]],
+[["The view that physical processes explain reality","PHYSICALISM"],["A figure of speech combining contradictory terms","OXYMORON"]],
+[["The study of principles of valid reasoning","LOGIC"],["Same-sounding words with different meanings","HOMOPHONE"]],
+[["Using an object or idea to represent a deeper meaning","SYMBOLISM"],["The quality of being difficult to understand","OBSCURITY"]],
+[["The doctrine that only one's own mind is certain to exist","SOLIPSISM"],["Omitting conjunctions between successive phrases","ASYNDETON"]],
+[["Using a word in a new grammatical role without changing its form","CONVERSION"],["A person who doubts the possibility of certain knowledge","AGNOSTIC"]],
+[["The study of how languages develop over time","HISTORICALLINGUISTICS"],["A word or phrase with multiple possible interpretations","AMBIGUITY"]],
+[["The philosophical view that reality is fundamentally mental","IDEALISM"],["Replacing something with a closely related term","METONYMY"]],
+[["A figure of speech that attributes human feelings to nature","PATHETICFALLACY"],["The belief that beauty is central to art","AESTHETICISM"]],
+[["The study of how context shapes language meaning","PRAGMATICS"],["A word whose sound imitates what it describes","ONOMATOPOEIA"]],
+[["The philosophical study of being and existence","METAPHYSICS"],["A statement that refers to itself","SELFREFERENCE"]]
+];
+const levelNames=["BEGINNER","BEGINNER","BEGINNER","BEGINNER","BEGINNER","BEGINNER","BEGINNER","BEGINNER","BEGINNER","BEGINNER","INTERMEDIATE","INTERMEDIATE","INTERMEDIATE","INTERMEDIATE","INTERMEDIATE","INTERMEDIATE","INTERMEDIATE","INTERMEDIATE","INTERMEDIATE","INTERMEDIATE","ADVANCED","ADVANCED","ADVANCED","ADVANCED","ADVANCED","ADVANCED","ADVANCED","ADVANCED","ADVANCED","ADVANCED","EXPERT","EXPERT","EXPERT","EXPERT","EXPERT","EXPERT","EXPERT","EXPERT","EXPERT","EXPERT","MASTER","MASTER","MASTER","MASTER","MASTER","MASTER","MASTER","MASTER","MASTER","MASTER"];
+const key='crosswordQuest50_v1';
+let saved;try{saved=JSON.parse(localStorage.getItem(key)||'{}')}catch(e){saved={}}
+let completed=new Set(saved.completed||[]), score=saved.score||0, current=0, answers={}, revealed=new Set();
+function save(){try{localStorage.setItem(key,JSON.stringify({completed:[...completed],score}))}catch(e){} updateStats()}
+function updateStats(){document.getElementById('statLevel').textContent=Math.min(50,Math.max(1,(Math.max(-1,...completed)+2)))+' / 50';document.getElementById('statScore').textContent=score;document.getElementById('statDone').textContent=completed.size}
+function renderLevels(){let box=document.getElementById('levels');box.innerHTML='';raw.forEach((_,i)=>{let b=document.createElement('button');let unlocked=i===0||completed.has(i-1)||completed.has(i);b.className='level'+(completed.has(i)?' done':'')+(!unlocked?' locked':'');b.textContent=(completed.has(i)?'✓ ':(!unlocked?'🔒 ':'')+(i+1));b.disabled=!unlocked;b.onclick=()=>openLevel(i);box.appendChild(b)})}
+function openLevel(i){if(i>0&&!completed.has(i-1)&&!completed.has(i))return;current=i;answers={};revealed=new Set();document.getElementById('home').style.display='none';document.getElementById('game').style.display='block';document.getElementById('levelTitle').textContent='Level '+(i+1);document.getElementById('difficulty').textContent=levelNames[i];document.getElementById('feedback').textContent='';document.getElementById('nextBtn').textContent=i===49?'Finish 🎉':'Next level →';document.getElementById('prevBtn').disabled=i===0;renderPuzzle();window.scrollTo({top:0,behavior:'smooth'})}
+function renderPuzzle(){let p=document.getElementById('puzzle');p.innerHTML='';raw[current].forEach((item,j)=>{let [clue,ans]=item;let card=document.createElement('div');card.className='wordcard';let lab=document.createElement('div');lab.className='cluelabel';lab.textContent=(j===0?'Across':'Down')+' • '+ans.replace(/[^A-Z]/g,'').length+' letters';let c=document.createElement('div');c.className='clue';c.textContent=clue;let tiles=document.createElement('div');tiles.className='letters';let val=answers[j]||'';[...ans].forEach((ch,k)=>{let t=document.createElement('div');t.className='tile'+(val[k]?' filled':'')+(revealed.has(j+':'+k)?' fixed':'');t.textContent=val[k]||'';tiles.appendChild(t)});let inp=document.createElement('input');inp.className='answer';inp.placeholder='Type your answer';inp.autocomplete='off';inp.autocapitalize='characters';inp.spellcheck=false;inp.maxLength=ans.length;inp.value=answers[j]||'';inp.setAttribute('aria-label','Answer for '+clue);inp.addEventListener('input',()=>{answers[j]=inp.value.toUpperCase().replace(/[^A-Z]/g,'');document.getElementById('feedback').textContent='';Array.from(tiles.children).forEach((t,k)=>{t.textContent=answers[j][k]||'';t.className='tile'+(answers[j][k]?' filled':'')+(revealed.has(j+':'+k)?' fixed':'')});document.getElementById('progressBar').style.width=(raw[current].reduce((n,a,x)=>n+Math.min((answers[x]||'').length,a[1].length),0)/raw[current].reduce((n,a)=>n+a[1].length,0)*100)+'%'});card.append(lab,c,tiles,inp);p.appendChild(card)});document.getElementById('progressBar').style.width='0%'}
+function check(){let all=true,correct=0;raw[current].forEach((a,j)=>{if((answers[j]||'').toUpperCase()===a[1])correct++;else all=false});let f=document.getElementById('feedback');if(all){f.className='feedback good';f.textContent='🎉 Excellent! Level complete.';if(!completed.has(current)){completed.add(current);score+=100;save();renderLevels()}document.getElementById('progressBar').style.width='100%';}else{f.className='feedback bad';f.textContent=correct+' of 2 correct. Keep going — check spelling and try again.'}}
+document.getElementById('checkBtn').onclick=check;
+document.getElementById('hintBtn').onclick=()=>{let j=raw[current].findIndex((a,k)=>(answers[k]||'')!==a[1]);if(j<0){document.getElementById('feedback').textContent='All answers are already correct!';return}let ans=raw[current][j][1],typed=answers[j]||'';let hint=ans[typed.length]||ans[0];document.getElementById('feedback').className='feedback';document.getElementById('feedback').textContent='Hint: '+raw[current][j][0]+' • Starts/continues with “'+hint+'”';};
+document.getElementById('revealBtn').onclick=()=>{let j=raw[current].findIndex((a,k)=>(answers[k]||'')!==a[1]);if(j<0){document.getElementById('feedback').textContent='All answers are already correct!';return}answers[j]=raw[current][j][1];for(let k=0;k<answers[j].length;k++)revealed.add(j+':'+k);renderPuzzle();document.getElementById('feedback').className='feedback';document.getElementById('feedback').textContent='Answer revealed. Check answers to complete this level.'};
+document.getElementById('backBtn').onclick=()=>{document.getElementById('game').style.display='none';document.getElementById('home').style.display='block';renderLevels();window.scrollTo({top:0,behavior:'smooth'})};
+document.getElementById('prevBtn').onclick=()=>openLevel(Math.max(0,current-1));
+document.getElementById('nextBtn').onclick=()=>{if(current===49&&completed.has(49)){document.getElementById('feedback').className='feedback good';document.getElementById('feedback').textContent='🏆 You completed all 50 levels!';return}if(!completed.has(current)){document.getElementById('feedback').className='feedback bad';document.getElementById('feedback').textContent='Complete this level first to unlock the next one.';return}if(current<49)openLevel(current+1)};
+document.getElementById('resetBtn').onclick=()=>{if(confirm('Reset all levels and score on this device?')){completed.clear();score=0;save();renderLevels()}};
+renderLevels();updateStats();
+</script>
+</body></html>

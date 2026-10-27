@@ -133,6 +133,14 @@ document.getElementById('nextBtn').onclick=()=>{if(current===49&&completed.has(4
 document.getElementById('resetBtn').onclick=()=>{if(confirm('Reset all levels and score on this device?')){completed.clear();score=0;save();renderLevels()}};
 renderLevels();updateStats();
 </script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js");
+  });
+}
+</script>
+
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#2563eb">
 </body></html>

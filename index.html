@@ -39,10 +39,10 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin-top:24px}
 </style>
 </head>
 <body>
-<header><div class="top"><div class="brand">🧩 Crossword Quest</div><h1>50 levels. One sharp mind.</h1><div class="sub">Solve the clues, unlock new challenges, and build your streak.</div></div></header>
+<header><div class="top"><div class="brand">🧩 Crossword Quest</div><h1>1000 levels. One sharp mind.</h1><div class="sub">Solve the clues, unlock new challenges, and build your streak.</div></div></header>
 <main class="wrap">
 <div class="stats">
- <div class="stat"><b id="statLevel">1 / 50</b><span>Current level</span></div>
+ <div class="stat"><b id="statLevel">1 / 1000</b><span>Current level</span></div>
  <div class="stat"><b id="statScore">0</b><span>Points earned</span></div>
  <div class="stat"><b id="statDone">0</b><span>Levels completed</span></div>
 </div>
@@ -113,9 +113,7 @@ const raw = [
 [["A figure of speech that attributes human feelings to nature","PATHETICFALLACY"],["The belief that beauty is central to art","AESTHETICISM"]],
 [["The study of how context shapes language meaning","PRAGMATICS"],["A word whose sound imitates what it describes","ONOMATOPOEIA"]],
 [["The philosophical study of being and existence","METAPHYSICS"],["A statement that refers to itself","SELFREFERENCE"]]
-];
 const baseQuestions = raw.flat();
-
 for (let n = raw.length; n < 1000; n++) {
   const idx = n - 50;
   const aIndex = idx % baseQuestions.length;
@@ -152,7 +150,7 @@ document.getElementById('hintBtn').onclick=()=>{let j=raw[current].findIndex((a,
 document.getElementById('revealBtn').onclick=()=>{let j=raw[current].findIndex((a,k)=>(answers[k]||'')!==a[1]);if(j<0){document.getElementById('feedback').textContent='All answers are already correct!';return}answers[j]=raw[current][j][1];for(let k=0;k<answers[j].length;k++)revealed.add(j+':'+k);renderPuzzle();document.getElementById('feedback').className='feedback';document.getElementById('feedback').textContent='Answer revealed. Check answers to complete this level.'};
 document.getElementById('backBtn').onclick=()=>{document.getElementById('game').style.display='none';document.getElementById('home').style.display='block';renderLevels();window.scrollTo({top:0,behavior:'smooth'})};
 document.getElementById('prevBtn').onclick=()=>openLevel(Math.max(0,current-1));
-document.getElementById('nextBtn').onclick=()=>{if(current===49&&completed.has(49)){document.getElementById('feedback').className='feedback good';document.getElementById('feedback').textContent='🏆 You completed all 50 levels!';return}if(!completed.has(current)){document.getElementById('feedback').className='feedback bad';document.getElementById('feedback').textContent='Complete this level first to unlock the next one.';return}if(current<49)openLevel(current+1)};
+document.getElementById('nextBtn').onclick=()=>{if(current===999&&completed.has(999)){document.getElementById('feedback').className='feedback good';document.getElementById('feedback').textContent='🏆 You completed all 50 levels!';return}if(!completed.has(current)){document.getElementById('feedback').className='feedback bad';document.getElementById('feedback').textContent='Complete this level first to unlock the next one.';return}if(current<49)openLevel(current+1)};
 document.getElementById('resetBtn').onclick=()=>{if(confirm('Reset all levels and score on this device?')){completed.clear();score=0;save();renderLevels()}};
 renderLevels();updateStats();
 </script>

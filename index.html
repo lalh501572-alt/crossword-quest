@@ -115,6 +115,31 @@ const raw = [
 [["The philosophical study of being and existence","METAPHYSICS"],["A statement that refers to itself","SELFREFERENCE"]]
 ];
 const levelNames=["BEGINNER","BEGINNER","BEGINNER","BEGINNER","BEGINNER","BEGINNER","BEGINNER","BEGINNER","BEGINNER","BEGINNER","INTERMEDIATE","INTERMEDIATE","INTERMEDIATE","INTERMEDIATE","INTERMEDIATE","INTERMEDIATE","INTERMEDIATE","INTERMEDIATE","INTERMEDIATE","INTERMEDIATE","ADVANCED","ADVANCED","ADVANCED","ADVANCED","ADVANCED","ADVANCED","ADVANCED","ADVANCED","ADVANCED","ADVANCED","EXPERT","EXPERT","EXPERT","EXPERT","EXPERT","EXPERT","EXPERT","EXPERT","EXPERT","EXPERT","MASTER","MASTER","MASTER","MASTER","MASTER","MASTER","MASTER","MASTER","MASTER","MASTER"];
+ 
+const baseQuestions = raw.flat();
+
+for (let n = raw.length; n < 1000; n++) {
+  const idx = n - 50;
+  const aIndex = idx % baseQuestions.length;
+  let bIndex = Math.floor(idx / baseQuestions.length)
+    % baseQuestions.length;
+
+  if (bIndex === aIndex) {
+    bIndex = (bIndex + 1) % baseQuestions.length;
+  }
+
+  raw.push([
+    baseQuestions[aIndex],
+    baseQuestions[bIndex]
+  ]);
+}
+
+const levelNames = Array.from({ length: 1000 }, (_, i) =>
+  i < 100 ? "BEGINNER" :
+  i < 500 ? "INTERMEDIATE" :
+  i < 800 ? "ADVANCED" :
+  i < 950 ? "EXPERT" : "MASTER"
+):
 const key='crosswordQuest50_v1';
 let saved;try{saved=JSON.parse(localStorage.getItem(key)||'{}')}catch(e){saved={}}
 let completed=new Set(saved.completed||[]), score=saved.score||0, current=0, answers={}, revealed=new Set();

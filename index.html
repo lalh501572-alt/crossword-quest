@@ -136,7 +136,7 @@ const levelNames = Array.from({ length: 1000 }, (_, i) =>
   i < 500 ? "INTERMEDIATE" :
   i < 800 ? "ADVANCED" :
   i < 950 ? "EXPERT" : "MASTER"
-];
+); 
 const key='crosswordQuest50_v1';
 let saved;try{saved=JSON.parse(localStorage.getItem(key)||'{}')}catch(e){saved={}}
 let completed=new Set(saved.completed||[]), score=saved.score||0, current=0, answers={}, revealed=new Set();

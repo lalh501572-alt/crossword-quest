@@ -388,9 +388,10 @@ function save() {
       score,
       coins,
       dailyTarget,
-      dailyCount,
-      dailyDate,
-      dailyRewarded
+dailyCount,
+dailyDate,
+dailyRewarded,
+unlockedBadges: [...unlockedBadges]
     }));
   } catch(e) {}
   updateStats();

@@ -531,8 +531,10 @@ document.addEventListener("input", function(e) {
   speak(letter.toUpperCase());
 });
 
-// Check answers
 
+    document.getElementById("progressBar").style.width = "100%";
+  
+// Check answers
 function check() {
   let correct = 0;
 
@@ -575,28 +577,12 @@ function check() {
     f.className = "feedback bad";
     f.textContent = correct + " of " + raw[current].length + " correct. Keep going!";
     speak("Try again! Check your answers.");
-
-       f.textContent = current === 999
-      ? "🏆 You completed all 1000 levels!"
-      : "🎉 Excellent! Level complete!";
-
-    speak("Excellent! Level complete!");
-    document.getElementById("progressBar").style.width = "100%";
-
-  } else {
-    f.className = "feedback bad";
-    f.textContent = correct + " of " + raw[current].length + " correct. Keep going!";
-    speak("Try again! Check your answers.");
   }
 }
-    document.getElementById("progressBar").style.width = "100%";
-  } else {
-    f.className = "feedback bad";
-    f.textContent = correct + " of 2 correct. Keep going!";
-    speak("Try again! Check your answers.");
-  }
-}
- document.getElementById("progressBar").style.width = 
+
+document.getElementById("checkBtn").onclick = check;
+
+// Hint button
 document.getElementById("hintBtn").onclick = () => {
   let j = raw[current].findIndex(
     (a, k) => (answers[k] || "") !== a[1]
@@ -613,6 +599,36 @@ document.getElementById("hintBtn").onclick = () => {
       "Not enough coins! You need 10 coins.";
     return;
   }
+
+  let ans = raw[current][j][1];
+  let typed = answers[j] || "";
+  let pos = 0;
+
+  while (pos < typed.length && typed[pos] === ans[pos]) {
+    pos++;
+  }
+
+  coins -= 10;
+  answers[j] = ans.slice(0, pos + 1);
+  revealed.add(j + ":" + pos);
+
+  save();
+  renderPuzzle();
+
+  document.getElementById("feedback").textContent =
+    "💡 Hint unlocked! 10 coins used.";
+};
+
+document.getElementById("hintBtn").onclick = () => {
+  let j = raw[current].findIndex(
+    (a, k) => (answers[k] || "") !== a[1]
+  );
+
+  if (j < 0) {
+    document.getElementById("feedback").textContent =
+      "All answers are already correct!";
+    return;
+  
 
   let ans = raw[current][j][1];
   let typed = answers[j] || "";

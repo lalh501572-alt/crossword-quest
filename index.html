@@ -332,6 +332,42 @@ const levelNames = Array.from({ length: 1000 }, (_, i) =>
  );
 const key='crosswordQuest50_v1';
 let saved;try{saved=JSON.parse(localStorage.getItem(key)||'{}')}catch(e){saved={}}
+ let coins = Number(saved.coins || 0);
+let dailyTarget = [3, 5, 10, 20].includes(Number(saved.dailyTarget))
+  ? Number(saved.dailyTarget) : 5;
+let dailyCount = Number(saved.dailyCount || 0);
+let dailyDate = saved.dailyDate || new Date().toLocaleDateString("en-CA");
+let dailyRewarded = Boolean(saved.dailyRewarded);
+
+function syncDailyDate() {
+  const today = new Date().toLocaleDateString("en-CA");
+  if (dailyDate !== today) {
+    dailyDate = today;
+    dailyCount = 0;
+    dailyRewarded = false;
+  }
+}
+
+function updateDaily() {
+  syncDailyDate();
+  document.getElementById("coinCount").textContent = coins;
+  document.getElementById("dailyTarget").value = dailyTarget;
+  document.getElementById("dailyProgress").textContent =
+    Math.min(dailyCount, dailyTarget) + " / " + dailyTarget;
+
+  const bar = document.getElementById("dailyBar");
+  bar.max = dailyTarget;
+  bar.value = Math.min(dailyCount, dailyTarget);
+
+  document.getElementById("dailyMessage").textContent =
+    dailyRewarded
+      ? "Daily reward earned! Great work!"
+      : "Complete your target to earn 50 coins!";
+}
+document.getElementById("dailyTarget").addEventListener("change", e => {
+  dailyTarget = Number(e.target.value);
+  save();
+});
 let completed=new Set(saved.completed||[]), score=saved.score||0, current=0, answers={}, revealed=new Set();
 function save(){try{localStorage.setItem(key,JSON.stringify({completed:[...completed],score}))}catch(e){} updateStats()}
 function updateStats(){document.getElementById('statLevel').textContent=Math.min(1000,Math.max(1,(Math.max(-1,...completed)+2)))+' / 1000';document.getElementById('statScore').textContent=score;document.getElementById('statDone').textContent=completed.size}

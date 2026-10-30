@@ -379,22 +379,25 @@ const raw = [
 [["The study of how context shapes language meaning","PRAGMATICS"],["A word whose sound imitates what it describes","ONOMATOPOEIA"]],
 [["The philosophical study of being and existence","METAPHYSICS"],["A statement that refers to itself","SELFREFERENCE"]]
  ];
-const baseQuestions = raw.flat();
-for (let n = raw.length; n < 1000; n++) {
-  const idx = n - 50;
-  const aIndex = idx % baseQuestions.length;
-  let bIndex = Math.floor(idx / baseQuestions.length)
-    % baseQuestions.length;
 
-  if (bIndex === aIndex) {
-    bIndex = (bIndex + 1) % baseQuestions.length;
+const baseQuestions = raw.flat();
+const originalQuestions = baseQuestions.slice();
+
+raw.length = 0;
+
+for (let n = 0; n < 1000; n++) {
+  const levelQuestions = [];
+
+  for (let j = 0; j < 5; j++) {
+    const idx = (n * 5 + j) % originalQuestions.length;
+    levelQuestions.push(originalQuestions[idx]);
   }
 
-  raw.push([
-    baseQuestions[aIndex],
-    baseQuestions[bIndex]
-  ]);
+  raw.push(levelQuestions);
 }
+
+  ]);
+ }
 
 const levelNames = Array.from({ length: 1000 }, (_, i) =>
   i < 100 ? "BEGINNER" :

@@ -315,7 +315,59 @@ function updateStats(){document.getElementById('statLevel').textContent=Math.min
 function renderLevels(){let box=document.getElementById('levels');box.innerHTML='';raw.forEach((_,i)=>{let b=document.createElement('button');let unlocked=i===0||completed.has(i-1)||completed.has(i);b.className='level'+(completed.has(i)?' done':'')+(!unlocked?' locked':'');b.textContent=(completed.has(i)?'✓ ':(!unlocked?'🔒 ':'')+(i+1));b.disabled=!unlocked;b.onclick=()=>openLevel(i);box.appendChild(b)})}
 function openLevel(i){if(i>0&&!completed.has(i-1)&&!completed.has(i))return;current=i;answers={};revealed=new Set();document.getElementById('home').style.display='none';document.getElementById('game').style.display='block';document.getElementById('levelTitle').textContent='Level '+(i+1);document.getElementById('difficulty').textContent=levelNames[i];document.getElementById('feedback').textContent='';document.getElementById('nextBtn').textContent=i===999?'Finish 🎉':'Next level →';document.getElementById('prevBtn').disabled=i===0;renderPuzzle();window.scrollTo({top:0,behavior:'smooth'})}
 function renderPuzzle(){let p=document.getElementById('puzzle');p.innerHTML='';raw[current].forEach((item,j)=>{let [clue,ans]=item;let card=document.createElement('div');card.className='wordcard';let lab=document.createElement('div');lab.className='cluelabel';lab.textContent=(j===0?'Across':'Down')+' • '+ans.replace(/[^A-Z]/g,'').length+' letters';let c=document.createElement('div');c.className='clue';c.textContent=clue;let tiles=document.createElement('div');tiles.className='letters';let val=answers[j]||'';[...ans].forEach((ch,k)=>{let t=document.createElement('div');t.className='tile'+(val[k]?' filled':'')+(revealed.has(j+':'+k)?' fixed':'');t.textContent=val[k]||'';tiles.appendChild(t)});let inp=document.createElement('input');inp.className='answer';inp.placeholder='Type your answer';inp.autocomplete='off';inp.autocapitalize='characters';inp.spellcheck=false;inp.maxLength=ans.length;inp.value=answers[j]||'';inp.setAttribute('aria-label','Answer for '+clue);inp.addEventListener('input',()=>{answers[j]=inp.value.toUpperCase().replace(/[^A-Z]/g,'');document.getElementById('feedback').textContent='';Array.from(tiles.children).forEach((t,k)=>{t.textContent=answers[j][k]||'';t.className='tile'+(answers[j][k]?' filled':'')+(revealed.has(j+':'+k)?' fixed':'')});document.getElementById('progressBar').style.width=(raw[current].reduce((n,a,x)=>n+Math.min((answers[x]||'').length,a[1].length),0)/raw[current].reduce((n,a)=>n+a[1].length,0)*100)+'%'});card.append(lab,c,tiles,inp);p.appendChild(card)});document.getElementById('progressBar').style.width='0%'}
-function check(){let all=true,correct=0;raw[current].forEach((a,j)=>{if((answers[j]||'').toUpperCase()===a[1])correct++;else all=false});let f=document.getElementById('feedback');if(all){f.className='feedback good';f.textContent='🎉 Excellent! Level complete.';if(!completed.has(current)){completed.add(current);score+=100;save();renderLevels()}document.getElementById('progressBar').style.width='100%';}else{f.className='feedback bad';f.textContent=correct+' of 2 correct. Keep going — check spelling and try again.'}}
+
+function speak(message) {
+  if (!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+
+  const voice = new SpeechSynthesisUtterance(message);
+  voice.lang = "en-US";
+  voice.rate = 0.9;
+  voice.pitch = 1.1;
+
+  window.speechSynthesis.speak(voice);
+}
+
+function check() {
+  let all = true;
+  let correct = 0;
+
+  raw[current].forEach((a, j) => {
+    if ((answers[j] || "").toUpperCase() === a[1]) {
+      correct++;
+    } else {
+      all = false;
+    }
+  });
+
+  let f = document.getElementById("feedback");
+
+  if (all) {
+    f.className = "feedback good";
+
+    if (!completed.has(current)) {
+      completed.add(current);
+      score += 100;
+      save();
+      renderLevels();
+    }
+
+    if (current === 999) {
+      f.textContent = "🏆 You completed all 1000 levels!";
+      speak("Congratulations! You completed all 1000 levels!");
+    } else {
+      f.textContent = "🎉 Excellent! Level complete.";
+      speak("Excellent! Level complete!");
+    }
+
+    document.getElementById("progressBar").style.width = "100%";
+
+  } else {
+    f.className = "feedback bad";
+    f.textContent = correct + " of 2 correct. Keep going!";
+    speak("Try again! Check your answers.");
+  }
+}
 document.getElementById('checkBtn').onclick=check;
 document.getElementById('hintBtn').onclick=()=>{let j=raw[current].findIndex((a,k)=>(answers[k]||'')!==a[1]);if(j<0){document.getElementById('feedback').textContent='All answers are already correct!';return}let ans=raw[current][j][1],typed=answers[j]||'';let hint=ans[typed.length]||ans[0];document.getElementById('feedback').className='feedback';document.getElementById('feedback').textContent='Hint: '+raw[current][j][0]+' • Starts/continues with “'+hint+'”';};
 document.getElementById('revealBtn').onclick=()=>{let j=raw[current].findIndex((a,k)=>(answers[k]||'')!==a[1]);if(j<0){document.getElementById('feedback').textContent='All answers are already correct!';return}answers[j]=raw[current][j][1];for(let k=0;k<answers[j].length;k++)revealed.add(j+':'+k);renderPuzzle();document.getElementById('feedback').className='feedback';document.getElementById('feedback').textContent='Answer revealed. Check answers to complete this level.'};

@@ -6,6 +6,132 @@
 <title>Crossword Quest — 1000 Levels</title>
 <link rel="manifest" href="./manifest.json">
 <style>
+ 
+/* CARTOON 3D GAME DESIGN */
+:root {
+  --navy: #312e81;
+  --blue: #6366f1;
+  --sky: #e0f2fe;
+  --bg: #fef3c7;
+  --gold: #fbbf24;
+}
+
+body {
+  background: linear-gradient(160deg, #bae6fd, #fce7f3, #fef3c7);
+}
+
+header {
+  background: linear-gradient(135deg, #7c3aed, #2563eb, #06b6d4);
+  border-radius: 0 0 35px 35px;
+  box-shadow: 0 9px 0 #312e81;
+}
+
+h1 {
+  text-shadow: 2px 3px 0 #312e81;
+}
+
+.stat, .panel {
+  border: 3px solid white;
+  border-radius: 22px;
+  box-shadow: 0 7px 0 #c4b5fd, 0 12px 20px #312e8120;
+}
+
+.stat b {
+  color: #7c3aed;
+}
+
+.level {
+  background: linear-gradient(145deg, #ffffff, #dbeafe);
+  border: 2px solid #93c5fd;
+  border-radius: 15px;
+  box-shadow: 0 5px 0 #60a5fa;
+  transition: transform .15s, box-shadow .15s;
+}
+
+.level:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 #60a5fa;
+}
+
+.level.done {
+  background: linear-gradient(145deg, #bbf7d0, #4ade80);
+  border-color: #22c55e;
+  box-shadow: 0 5px 0 #15803d;
+}
+
+button {
+  border-radius: 15px;
+  transition: transform .15s, box-shadow .15s;
+}
+
+.primary {
+  background: linear-gradient(145deg, #8b5cf6, #4f46e5);
+  box-shadow: 0 5px 0 #312e81;
+}
+
+.secondary {
+  background: linear-gradient(145deg, #fde68a, #fbbf24);
+  box-shadow: 0 5px 0 #d97706;
+}
+
+.quiet {
+  box-shadow: 0 4px 0 #cbd5e1;
+}
+
+button:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #64748b;
+}
+
+.wordcard {
+  background: linear-gradient(145deg, #ffffff, #eff6ff);
+  border: 2px solid #bfdbfe;
+  border-radius: 20px;
+  box-shadow: 0 6px 0 #93c5fd;
+}
+
+.tile {
+  background: linear-gradient(145deg, #ffffff, #bfdbfe);
+  border: 2px solid #60a5fa;
+  border-radius: 10px;
+  box-shadow: 0 4px 0 #3b82f6;
+}
+
+.tile.filled {
+  background: linear-gradient(145deg, #dbeafe, #93c5fd);
+}
+
+.tile.fixed {
+  background: linear-gradient(145deg, #bbf7d0, #4ade80);
+  box-shadow: 0 4px 0 #16a34a;
+}
+
+.answer {
+  border: 2px solid #a78bfa;
+  border-radius: 15px;
+  background: #ffffff;
+}
+
+.progress {
+  height: 11px;
+  background: #ddd6fe;
+  border: 2px solid white;
+}
+
+.bar {
+  background: linear-gradient(90deg, #22c55e, #a3e635);
+  border-radius: 99px;
+}
+
+@keyframes cartoonPop {
+  0% { transform: scale(.96); }
+  100% { transform: scale(1); }
+}
+
+.wordcard {
+  animation: cartoonPop .25s ease-out;
+}
+
 :root{--navy:#172554;--blue:#2563eb;--sky:#dbeafe;--ink:#172033;--muted:#64748b;--bg:#f4f7fb;--white:#fff;--green:#15803d;--gold:#f59e0b}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
 header{background:linear-gradient(135deg,#172554,#2563eb);color:#fff;padding:22px 18px 26px;border-radius:0 0 25px 25px}

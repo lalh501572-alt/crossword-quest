@@ -532,9 +532,7 @@ document.addEventListener("input", function(e) {
 });
 
 
-    document.getElementById("progressBar").style.width = "100%";
-  
-// Check answers
+ //Check answers
 function check() {
   let correct = 0;
 
@@ -619,53 +617,6 @@ document.getElementById("hintBtn").onclick = () => {
     "💡 Hint unlocked! 10 coins used.";
 };
 
-document.getElementById("hintBtn").onclick = () => {
-  let j = raw[current].findIndex(
-    (a, k) => (answers[k] || "") !== a[1]
-  );
-
-  if (j < 0) {
-    document.getElementById("feedback").textContent =
-      "All answers are already correct!";
-    return;
-  
-
-  let ans = raw[current][j][1];
-  let typed = answers[j] || "";
-  let pos = typed.length;
-
-  coins -= 10;
-  answers[j] = typed + ans[pos];
-
-  save();
-  renderPuzzle();
-
-  document.getElementById("feedback").textContent =
-    "💡 Hint unlocked! 10 coins used.";
-  let j = raw[current].findIndex(
-    (a, k) => (answers[k] || "") !== a[1]
-  );
- }
-
-  if (coins < 10) {
-    document.getElementById("feedback").textContent =
-      "Not enough coins! You need 10 coins.";
-    return;
-  }
-
-  let ans = raw[current][j][1];
-  let typed = answers[j] || "";
-  let pos = typed.length;
-
-  coins -= 10;
-  answers[j] = typed + ans[pos];
-
-  save();
-  renderPuzzle();
-
-  document.getElementById("feedback").textContent =
-    "💡 Hint unlocked! 10 coins used.";
-};
 document.getElementById('revealBtn').onclick=()=>{let j=raw[current].findIndex((a,k)=>(answers[k]||'')!==a[1]);if(j<0){document.getElementById('feedback').textContent='All answers are already correct!';return}answers[j]=raw[current][j][1];for(let k=0;k<answers[j].length;k++)revealed.add(j+':'+k);renderPuzzle();document.getElementById('feedback').className='feedback';document.getElementById('feedback').textContent='Answer revealed. Check answers to complete this level.'};
 document.getElementById('backBtn').onclick=()=>{document.getElementById('game').style.display='none';document.getElementById('home').style.display='block';renderLevels();window.scrollTo({top:0,behavior:'smooth'})};
 document.getElementById('prevBtn').onclick=()=>openLevel(Math.max(0,current-1));

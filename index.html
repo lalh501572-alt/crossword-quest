@@ -328,29 +328,40 @@ function speak(message) {
   window.speechSynthesis.speak(voice);
 }
  function speak(message) {
-  // tumhara purana voice code
+  if (!("speechSynthesis" in window)) return;
+
+  window.speechSynthesis.cancel();
+
+  const voice = new SpeechSynthesisUtterance(message);
+  voice.lang = "en-US";
+  voice.rate = 0.85;
+  voice.pitch = 1.1;
+
+  window.speechSynthesis.speak(voice);
 }
 
-// YAHAN NAYA LETTER SOUND CODE PASTE KARO
+// Letter sound while typing
+document.addEventListener("input", function(e) {
+  if (!e.target.classList.contains("answer")) return;
 
+  const letter = e.data;
+  if (!letter || !/^[a-z]$/i.test(letter)) return;
+
+  speak(letter.toUpperCase());
+});
+
+// Check answers
 function check() {
-  // tumhara purana check code
-}
-function check() {
-  let all = true;
   let correct = 0;
-
-  raw[current].forEach((a, j) => {
+raw[current].forEach((a, j) => {
     if ((answers[j] || "").toUpperCase() === a[1]) {
       correct++;
-    } else {
-      all = false;
     }
   });
 
-  let f = document.getElementById("feedback");
+ const f = document.getElementById("feedback");
 
-  if (all) {
+  if (correct === 2) {
     f.className = "feedback good";
 
     if (!completed.has(current)) {
@@ -360,22 +371,24 @@ function check() {
       renderLevels();
     }
 
-    if (current === 999) {
-      f.textContent = "🏆 You completed all 1000 levels!";
-      speak("Congratulations! You completed all 1000 levels!");
-    } else {
-      f.textContent = "🎉 Excellent! Level complete.";
-      speak("Excellent! Level complete!");
-    }
+    f.textContent = current === 999
+      ? "🏆 You completed all 1000 levels!"
+      : "🎉 Excellent! Level complete.";
+
+    speak(current === 999
+      ? "Congratulations! You completed all 1000 levels!"
+      : "Excellent! Level complete!");
 
     document.getElementById("progressBar").style.width = "100%";
-
   } else {
     f.className = "feedback bad";
     f.textContent = correct + " of 2 correct. Keep going!";
     speak("Try again! Check your answers.");
   }
 }
+
+document.getElementById('checkBtn').onclick = check;
+ 
 document.getElementById('checkBtn').onclick=check;
 document.getElementById('hintBtn').onclick=()=>{let j=raw[current].findIndex((a,k)=>(answers[k]||'')!==a[1]);if(j<0){document.getElementById('feedback').textContent='All answers are already correct!';return}let ans=raw[current][j][1],typed=answers[j]||'';let hint=ans[typed.length]||ans[0];document.getElementById('feedback').className='feedback';document.getElementById('feedback').textContent='Hint: '+raw[current][j][0]+' • Starts/continues with “'+hint+'”';};
 document.getElementById('revealBtn').onclick=()=>{let j=raw[current].findIndex((a,k)=>(answers[k]||'')!==a[1]);if(j<0){document.getElementById('feedback').textContent='All answers are already correct!';return}answers[j]=raw[current][j][1];for(let k=0;k<answers[j].length;k++)revealed.add(j+':'+k);renderPuzzle();document.getElementById('feedback').className='feedback';document.getElementById('feedback').textContent='Answer revealed. Check answers to complete this level.'};

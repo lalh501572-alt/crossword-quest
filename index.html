@@ -215,7 +215,30 @@ header {
  <div class="stat"><b id="statLevel">1 / 1000</b><span>Current level</span></div>
  <div class="stat"><b id="statScore">0</b><span>Points earned</span></div>
  <div class="stat"><b id="statDone">0</b><span>Levels completed</span></div>
-</div>
+</div> 
+<section class="panel" id="dailyPanel">
+  <h2>🎯 Daily Challenge</h2>
+  <p>Choose your daily target:</p>
+
+  <select id="dailyTarget">
+    <option value="3">3 Levels</option>
+    <option value="5" selected>5 Levels</option>
+    <option value="10">10 Levels</option>
+    <option value="20">20 Levels</option>
+  </select>
+
+  <h3>🪙 Coins: <span id="coinCount">0</span></h3>
+
+  <p>Today's progress:
+    <strong id="dailyProgress">0 / 5</strong>
+  </p>
+
+  <progress id="dailyBar" value="0" max="5"></progress>
+
+  <p id="dailyMessage">
+    Complete your daily target to earn 50 coins!
+  </p>
+</section>
 <section id="home">
  <div class="toolbar"><div><h2>Choose a level</h2><div class="small">Complete a level to unlock the next one.</div></div><button class="quiet" id="resetBtn">Reset game</button></div>
  <div id="levels"></div>

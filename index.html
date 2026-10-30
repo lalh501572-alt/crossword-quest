@@ -575,6 +575,18 @@ function check() {
     f.className = "feedback bad";
     f.textContent = correct + " of " + raw[current].length + " correct. Keep going!";
     speak("Try again! Check your answers.");
+
+       f.textContent = current === 999
+      ? "🏆 You completed all 1000 levels!"
+      : "🎉 Excellent! Level complete!";
+
+    speak("Excellent! Level complete!");
+    document.getElementById("progressBar").style.width = "100%";
+
+  } else {
+    f.className = "feedback bad";
+    f.textContent = correct + " of " + raw[current].length + " correct. Keep going!";
+    speak("Try again! Check your answers.");
   }
 }
     document.getElementById("progressBar").style.width = "100%";
@@ -595,6 +607,29 @@ document.getElementById("hintBtn").onclick = () => {
       "All answers are already correct!";
     return;
   }
+
+  if (coins < 10) {
+    document.getElementById("feedback").textContent =
+      "Not enough coins! You need 10 coins.";
+    return;
+  }
+
+  let ans = raw[current][j][1];
+  let typed = answers[j] || "";
+  let pos = typed.length;
+
+  coins -= 10;
+  answers[j] = typed + ans[pos];
+
+  save();
+  renderPuzzle();
+
+  document.getElementById("feedback").textContent =
+    "💡 Hint unlocked! 10 coins used.";
+  let j = raw[current].findIndex(
+    (a, k) => (answers[k] || "") !== a[1]
+  );
+ }
 
   if (coins < 10) {
     document.getElementById("feedback").textContent =

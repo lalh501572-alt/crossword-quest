@@ -439,10 +439,19 @@ raw[current].forEach((a, j) => {
     f.className = "feedback good";
 
     if (!completed.has(current)) {
-      completed.add(current);
-      score += 100;
-      save();
-      renderLevels();
+  completed.add(current);
+  score += 100;
+
+  syncDailyDate();
+  dailyCount++;
+
+  if (dailyCount >= dailyTarget && !dailyRewarded) {
+    coins += 50;
+    dailyRewarded = true;
+  }
+save();
+  renderLevels();
+    }
     }
 
     f.textContent = current === 999

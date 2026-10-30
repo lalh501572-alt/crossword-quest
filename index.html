@@ -544,9 +544,14 @@ function check() {
 
   const f = document.getElementById("feedback");
 
-  f.textContent = correct + " of " + raw[current].length + " correct. Keep going!";
+  if (correct === raw[current].length) {
+    f.className = "feedback good";
+
+    if (!completed.has(current)) {
+      completed.add(current);
       score += 100;
-     checkAchievements();
+      checkAchievements();
+
       syncDailyDate();
       dailyCount++;
 
@@ -561,12 +566,17 @@ function check() {
 
     f.textContent = current === 999
       ? "🏆 You completed all 1000 levels!"
-      : "🎉 Excellent! Level complete.";
+      : "🎉 Excellent! Level complete!";
 
-    speak(current === 999
-      ? "Congratulations! You completed all 1000 levels!"
-      : "Excellent! Level complete!");
+    speak("Excellent! Level complete!");
+    document.getElementById("progressBar").style.width = "100%";
 
+  } else {
+    f.className = "feedback bad";
+    f.textContent = correct + " of " + raw[current].length + " correct. Keep going!";
+    speak("Try again! Check your answers.");
+  }
+}
     document.getElementById("progressBar").style.width = "100%";
   } else {
     f.className = "feedback bad";

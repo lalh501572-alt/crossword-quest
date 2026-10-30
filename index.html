@@ -544,11 +544,7 @@ function check() {
 
   const f = document.getElementById("feedback");
 
-  if (correct === 2) {
-    f.className = "feedback good";
-
-    if (!completed.has(current)) {
-      completed.add(current);
+  f.textContent = correct + " of " + raw[current].length + " correct. Keep going!";
       score += 100;
      checkAchievements();
       syncDailyDate();

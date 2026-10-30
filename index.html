@@ -396,7 +396,42 @@ function save() {
   updateDaily();
 }
 function updateStats(){document.getElementById('statLevel').textContent=Math.min(1000,Math.max(1,(Math.max(-1,...completed)+2)))+' / 1000';document.getElementById('statScore').textContent=score;document.getElementById('statDone').textContent=completed.size}
-function renderLevels(){let box=document.getElementById('levels');box.innerHTML='';raw.forEach((_,i)=>{let b=document.createElement('button');let unlocked=i===0||completed.has(i-1)||completed.has(i);b.className='level'+(completed.has(i)?' done':'')+(!unlocked?' locked':'');b.textContent=(completed.has(i)?'✓ ':(!unlocked?'🔒 ':'')+(i+1));b.disabled=!unlocked;b.onclick=()=>openLevel(i);box.appendChild(b)})}
+const badges = [
+  {goal:1, name:"First Victory", reward:20, icon:"🥉"},
+  {goal:10, name:"Puzzle Beginner", reward:30, icon:"🥈"},
+  {goal:50, name:"Puzzle Master", reward:50, icon:"🥇"},
+  {goal:100, name:"Century Solver", reward:100, icon:"🏆"},
+  {goal:1000, name:"Legend Solver", reward:500, icon:"👑"}
+];
+
+let unlockedBadges = new Set(saved.unlockedBadges || []);
+
+function updateAchievements() {
+  const list = document.getElementById("achievementList");
+  list.innerHTML = "";
+
+  badges.forEach(b => {
+    const unlocked = unlockedBadges.has(b.goal);
+    const item = document.createElement("p");
+
+    item.textContent = b.icon + " " + b.name + " — " +
+      (unlocked ? "Unlocked ✓" : completed.size + " / " + b.goal);
+
+    list.appendChild(item);
+  });
+}
+
+function checkAchievements() {
+  badges.forEach(b => {
+    if (completed.size >= b.goal && !unlockedBadges.has(b.goal)) {
+      unlockedBadges.add(b.goal);
+      coins += b.reward;
+    }
+  });
+
+  updateAchievements();
+}
+ function renderLevels(){let box=document.getElementById('levels');box.innerHTML='';raw.forEach((_,i)=>{let b=document.createElement('button');let unlocked=i===0||completed.has(i-1)||completed.has(i);b.className='level'+(completed.has(i)?' done':'')+(!unlocked?' locked':'');b.textContent=(completed.has(i)?'✓ ':(!unlocked?'🔒 ':'')+(i+1));b.disabled=!unlocked;b.onclick=()=>openLevel(i);box.appendChild(b)})}
 function openLevel(i){if(i>0&&!completed.has(i-1)&&!completed.has(i))return;current=i;answers={};revealed=new Set();document.getElementById('home').style.display='none';document.getElementById('game').style.display='block';document.getElementById('levelTitle').textContent='Level '+(i+1);document.getElementById('difficulty').textContent=levelNames[i];document.getElementById('feedback').textContent='';document.getElementById('nextBtn').textContent=i===999?'Finish 🎉':'Next level →';document.getElementById('prevBtn').disabled=i===0;renderPuzzle();window.scrollTo({top:0,behavior:'smooth'})}
 function renderPuzzle(){let p=document.getElementById('puzzle');p.innerHTML='';raw[current].forEach((item,j)=>{let [clue,ans]=item;let card=document.createElement('div');card.className='wordcard';let lab=document.createElement('div');lab.className='cluelabel';lab.textContent=(j===0?'Across':'Down')+' • '+ans.replace(/[^A-Z]/g,'').length+' letters';let c=document.createElement('div');c.className='clue';c.textContent=clue;let tiles=document.createElement('div');tiles.className='letters';let val=answers[j]||'';[...ans].forEach((ch,k)=>{let t=document.createElement('div');t.className='tile'+(val[k]?' filled':'')+(revealed.has(j+':'+k)?' fixed':'');t.textContent=val[k]||'';tiles.appendChild(t)});let inp=document.createElement('input');inp.className='answer';inp.placeholder='Type your answer';inp.autocomplete='off';inp.autocapitalize='characters';inp.spellcheck=false;inp.maxLength=ans.length;inp.value=answers[j]||'';inp.setAttribute('aria-label','Answer for '+clue);inp.addEventListener('input',()=>{answers[j]=inp.value.toUpperCase().replace(/[^A-Z]/g,'');document.getElementById('feedback').textContent='';Array.from(tiles.children).forEach((t,k)=>{t.textContent=answers[j][k]||'';t.className='tile'+(answers[j][k]?' filled':'')+(revealed.has(j+':'+k)?' fixed':'')});document.getElementById('progressBar').style.width=(raw[current].reduce((n,a,x)=>n+Math.min((answers[x]||'').length,a[1].length),0)/raw[current].reduce((n,a)=>n+a[1].length,0)*100)+'%'});card.append(lab,c,tiles,inp);p.appendChild(card)});document.getElementById('progressBar').style.width='0%'}
 

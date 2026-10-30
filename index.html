@@ -425,33 +425,35 @@ document.addEventListener("input", function(e) {
 });
 
 // Check answers
+
 function check() {
   let correct = 0;
-raw[current].forEach((a, j) => {
+
+  raw[current].forEach((a, j) => {
     if ((answers[j] || "").toUpperCase() === a[1]) {
       correct++;
     }
   });
 
- const f = document.getElementById("feedback");
+  const f = document.getElementById("feedback");
 
   if (correct === 2) {
     f.className = "feedback good";
 
     if (!completed.has(current)) {
-  completed.add(current);
-  score += 100;
+      completed.add(current);
+      score += 100;
 
-  syncDailyDate();
-  dailyCount++;
+      syncDailyDate();
+      dailyCount++;
 
-  if (dailyCount >= dailyTarget && !dailyRewarded) {
-    coins += 50;
-    dailyRewarded = true;
-  }
-save();
-  renderLevels();
-    }
+      if (dailyCount >= dailyTarget && !dailyRewarded) {
+        coins += 50;
+        dailyRewarded = true;
+      }
+
+      save();
+      renderLevels();
     }
 
     f.textContent = current === 999
@@ -469,10 +471,9 @@ save();
     speak("Try again! Check your answers.");
   }
 }
-
+ document.getElementById("progressBar").style.width = 
 document.getElementById('checkBtn').onclick = check;
- 
-document.getElementById('checkBtn').onclick=check;
+ document.getElementById('checkBtn').onclick=check;
 document.getElementById('hintBtn').onclick=()=>{let j=raw[current].findIndex((a,k)=>(answers[k]||'')!==a[1]);if(j<0){document.getElementById('feedback').textContent='All answers are already correct!';return}let ans=raw[current][j][1],typed=answers[j]||'';let hint=ans[typed.length]||ans[0];document.getElementById('feedback').className='feedback';document.getElementById('feedback').textContent='Hint: '+raw[current][j][0]+' • Starts/continues with “'+hint+'”';};
 document.getElementById('revealBtn').onclick=()=>{let j=raw[current].findIndex((a,k)=>(answers[k]||'')!==a[1]);if(j<0){document.getElementById('feedback').textContent='All answers are already correct!';return}answers[j]=raw[current][j][1];for(let k=0;k<answers[j].length;k++)revealed.add(j+':'+k);renderPuzzle();document.getElementById('feedback').className='feedback';document.getElementById('feedback').textContent='Answer revealed. Check answers to complete this level.'};
 document.getElementById('backBtn').onclick=()=>{document.getElementById('game').style.display='none';document.getElementById('home').style.display='block';renderLevels();window.scrollTo({top:0,behavior:'smooth'})};

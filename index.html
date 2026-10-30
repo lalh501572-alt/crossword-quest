@@ -392,9 +392,8 @@ for (let n = 0; n < 1000; n++) {
     const idx = (n * 5 + j) % originalQuestions.length;
     levelQuestions.push(originalQuestions[idx]);
   }
+raw.push(levelQuestions);
 
-  raw.push(levelQuestions);
-}
 const levelNames = Array.from({ length: 1000 }, (_, i) =>
   i < 100 ? "BEGINNER" :
   i < 500 ? "INTERMEDIATE" :

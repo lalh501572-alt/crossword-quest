@@ -614,6 +614,47 @@ renderLevels();
 updateStats();
 updateDaily();
 updateAchievements();
+ // DAILY LOGIN REWARD
+function getTodayDate() {
+  const d = new Date();
+  return d.getFullYear() + "-" +
+    String(d.getMonth() + 1).padStart(2, "0") + "-" +
+    String(d.getDate()).padStart(2, "0");
+}
+
+const loginRewardButton = document.getElementById("claimLoginBtn");
+const loginRewardMessage = document.getElementById("loginRewardMessage");
+
+function updateLoginReward() {
+  const claimedDate = localStorage.getItem("crosswordLoginClaimDate");
+
+  if (claimedDate === getTodayDate()) {
+    loginRewardButton.disabled = true;
+    loginRewardButton.textContent = "Already Claimed ✓";
+    loginRewardMessage.textContent = "Come back tomorrow for 10 more coins!";
+  } else {
+    loginRewardButton.disabled = false;
+    loginRewardButton.textContent = "Claim 10 Coins";
+    loginRewardMessage.textContent = "Your daily reward is ready!";
+  }
+}
+
+loginRewardButton.onclick = function () {
+  if (localStorage.getItem("crosswordLoginClaimDate") === getTodayDate()) {
+    updateLoginReward();
+    return;
+  }
+
+  coins += 10;
+  localStorage.setItem("crosswordLoginClaimDate", getTodayDate());
+
+  save();
+  updateLoginReward();
+
+  loginRewardMessage.textContent = "🎉 10 coins added to your account!";
+};
+
+updateLoginReward();
 </script>
 <script>
 if ("serviceWorker" in navigator) {

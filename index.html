@@ -508,20 +508,8 @@ function speak(message) {
 
   window.speechSynthesis.speak(voice);
 }
- function speak(message) {
-  if (!("speechSynthesis" in window)) return;
 
-  window.speechSynthesis.cancel();
-
-  const voice = new SpeechSynthesisUtterance(message);
-  voice.lang = "en-US";
-  voice.rate = 0.85;
-  voice.pitch = 1.1;
-
-  window.speechSynthesis.speak(voice);
-}
-
-// Letter sound while typing
+ // Letter sound while typing
 document.addEventListener("input", function(e) {
   if (!e.target.classList.contains("answer")) return;
 

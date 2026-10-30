@@ -369,7 +369,22 @@ document.getElementById("dailyTarget").addEventListener("change", e => {
   save();
 });
 let completed=new Set(saved.completed||[]), score=saved.score||0, current=0, answers={}, revealed=new Set();
-function save(){try{localStorage.setItem(key,JSON.stringify({completed:[...completed],score}))}catch(e){} updateStats()}
+function save() {
+  syncDailyDate();
+  try {
+    localStorage.setItem(key, JSON.stringify({
+      completed: [...completed],
+      score,
+      coins,
+      dailyTarget,
+      dailyCount,
+      dailyDate,
+      dailyRewarded
+    }));
+  } catch(e) {}
+  updateStats();
+  updateDaily();
+}
 function updateStats(){document.getElementById('statLevel').textContent=Math.min(1000,Math.max(1,(Math.max(-1,...completed)+2)))+' / 1000';document.getElementById('statScore').textContent=score;document.getElementById('statDone').textContent=completed.size}
 function renderLevels(){let box=document.getElementById('levels');box.innerHTML='';raw.forEach((_,i)=>{let b=document.createElement('button');let unlocked=i===0||completed.has(i-1)||completed.has(i);b.className='level'+(completed.has(i)?' done':'')+(!unlocked?' locked':'');b.textContent=(completed.has(i)?'✓ ':(!unlocked?'🔒 ':'')+(i+1));b.disabled=!unlocked;b.onclick=()=>openLevel(i);box.appendChild(b)})}
 function openLevel(i){if(i>0&&!completed.has(i-1)&&!completed.has(i))return;current=i;answers={};revealed=new Set();document.getElementById('home').style.display='none';document.getElementById('game').style.display='block';document.getElementById('levelTitle').textContent='Level '+(i+1);document.getElementById('difficulty').textContent=levelNames[i];document.getElementById('feedback').textContent='';document.getElementById('nextBtn').textContent=i===999?'Finish 🎉':'Next level →';document.getElementById('prevBtn').disabled=i===0;renderPuzzle();window.scrollTo({top:0,behavior:'smooth'})}

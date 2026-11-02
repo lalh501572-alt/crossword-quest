@@ -895,6 +895,8 @@ function makeSudoku(level) {
   }
  }
  function startSudoku(level) {
+  document.getElementById("home").style.display = "none";
+document.getElementById("game").style.display = "none";
   sudokuLevel = level;
 
   const data = makeSudoku(level);

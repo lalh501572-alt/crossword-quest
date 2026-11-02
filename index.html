@@ -812,19 +812,7 @@ function makeSudoku(level) {
 
   return { puzzle, solution };
 }
-
-function renderSudokuLevels() {
-  const box = document.getElementById("sudokuLevels");
-  box.innerHTML = "";
-
-  for (let i = 1; i <= 1000; i++) {
-    const btn = document.createElement("button");
-    btn.textContent = i <= sudokuProgress.completed + 1 ? i : "🔒";
-    btn.disabled = i > sudokuProgress.completed + 1;
-    btn.onclick = () => startSudoku(i);
-    box.appendChild(btn);
-  }
-}
+ 
  function renderSudokuLevels() {
   const container = document.getElementById("sudokuLevels");
 

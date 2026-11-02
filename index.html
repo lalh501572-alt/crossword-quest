@@ -403,15 +403,44 @@ header {
  </div>
  <div class="note">This free version saves progress on this device. It works in your browser and does not need an account.</div>
 </section>
- <section id="sudokuScreen" class="panel" style="display:none">
-  <button class="quiet" onclick="showHub()">← Home</button>
-  <h2>🔢 Sudoku Quest</h2>
-  <section id="sudokuScre
- <section id="sudokuScreen" class="panel" style="display:none">
+<!-- CROSSWORD GAME SCREEN -->
+<section id="game" class="panel" style="display:none">
+  <div class="gamehead">
+    <div>
+      <h2 id="levelTitle">Level 1</h2>
+      <div class="small" id="difficulty">BEGINNER</div>
+    </div>
+    <button class="quiet" id="backBtn">← Home</button>
+  </div>
+
+  <div class="progress">
+    <div class="bar" id="progressBar"></div>
+  </div>
+
+  <div id="puzzle"></div>
+
+  <div class="feedback" id="feedback"></div>
+
+  <div class="actions">
+    <button class="secondary" id="hintBtn">💡 Hint (10 coins)</button>
+    <button class="secondary" id="revealBtn">Reveal</button>
+    <button class="primary" id="checkBtn">Check Answers</button>
+  </div>
+
+  <div class="actions">
+    <button class="quiet" id="prevBtn">← Previous</button>
+    <button class="primary" id="nextBtn">Next Level →</button>
+  </div>
+</section>
+
+<!-- SUDOKU GAME SCREEN -->
+<section id="sudokuScreen" class="panel" style="display:none">
   <button class="quiet" onclick="showHub()">← Home</button>
   <h2>🔢 Sudoku Quest</h2>
   <p>1,000 levels • 5 difficulty stages</p>
-<div id="sudokuLevels"></div>
+
+  <div id="sudokuLevels"></div>
+
   <div id="sudokuPlay" style="display:none">
     <h3 id="sudokuTitle">Level 1</h3>
     <div id="sudokuBoard"></div>
@@ -419,7 +448,6 @@ header {
     <p id="sudokuMessage"></p>
   </div>
 </section>
- </section>
 <footer>
   Crossword Quest • Free to play<br>
   Created by Harilal Kumar

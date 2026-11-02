@@ -424,6 +424,20 @@ header {
  <div class="feedback" id="feedback" aria-live="polite"></div>
  <div class="actions"><button class="quiet" id="prevBtn">Previous</button><button class="primary" id="nextBtn">Next level →</button></div>
 </section>
+ </section>
+ <section id="sudokuScreen" class="panel" style="display:none">
+  <button class="quiet" onclick="showHub()">← Home</button>
+  <h2>🔢 Sudoku Quest</h2>
+  <p>1,000 levels • 5 difficulty stages</p>
+  <div id="sudokuLevels"></div>
+<section id="game" class="panel">
+ <div class="gamehead"><button class="quiet" id="backBtn">← Levels</button><div style="text-align:right"><div class="small" id="difficulty">BEGINNER</div><h2 id="levelTitle">Level 1</h2></div></div>
+ <div class="progress"><div class="bar" id="progressBar"></div></div>
+ <div id="puzzle"></div>
+ <div class="actions"><button class="secondary" id="hintBtn">💡 Hint</button><button class="quiet" id="revealBtn">Reveal answer</button><button class="primary" id="checkBtn">Check answers</button></div>
+ <div class="feedback" id="feedback" aria-live="polite"></div>
+ <div class="actions"><button class="quiet" id="prevBtn">Previous</button><button class="primary" id="nextBtn">Next level →</button></div>
+</section>
  <section id="sudokuScreen" class="panel" style="display:none">
   <button class="quiet" onclick="showHub()">← Home</button>
   <h2>🔢 Sudoku Quest</h2>
@@ -437,6 +451,50 @@ header {
     <p id="sudokuMessage"></p>
   </div>
  </section>
+<footer>
+  Crossword Quest • Free to play<br>
+  Created by Harilal Kumar
+
+  <div style="margin-top:15px;display:flex;justify-content:center;gap:15px;flex-wrap:wrap;">
+  <a href="#about">About Us</a>
+  <a href="#privacy">Privacy Policy</a>
+  <a href="#terms">Terms & Conditions</a>
+  <a href="#disclaimer">Disclaimer</a>
+  <a href="#contact">Contact Us</a>
+   </div>
+</footer>
+
+<section id="about" class="panel" style="margin-top:20px;">
+  <h2>About Us</h2>
+  <p>Welcome to Crossword Quest! Enjoy fun and challenging crossword and Sudoku puzzles. Our goal is to make learning and brain training enjoyable for everyone.</p>
+</section>
+
+<section id="privacy" class="panel" style="margin-top:15px;">
+  <h2>Privacy Policy</h2>
+  <p>Crossword Quest saves game progress on your device using local storage. We use Google Analytics to understand website usage. We do not ask players to create an account.</p>
+  <p>For questions about privacy, contact us using the Contact Us section.</p>
+</section>
+<section id="terms" class="panel" style="margin-top:15px;">
+  <h2>Terms & Conditions</h2>
+  <p>By using Crossword Quest, you agree to use the website for personal and entertainment purposes.</p>
+  <p>Please do not copy, republish, or misuse the website's content or code without permission.</p>
+  <p>We may update these terms when necessary.</p>
+</section>
+
+<section id="disclaimer" class="panel" style="margin-top:15px;">
+  <h2>Disclaimer</h2>
+  <p>Crossword Quest provides crossword and Sudoku games for entertainment and general brain practice.</p>
+  <p>We try to keep the games working correctly, but we cannot guarantee uninterrupted or error-free service.</p>
+</section>
+<section id="contact" class="panel" style="margin-top:15px;">
+  <h2>Contact Us</h2>
+  <p>For questions, feedback or support, contact the website creator.</p>
+  <p>Email: <a href="mailto:lalh501572@gmail.com">lalh501572@gmail.com</a></p>
+</section>
+</main>
+<script>
+const raw = [
+
 <footer>
   Crossword Quest • Free to play<br>
   Created by Harilal Kumar

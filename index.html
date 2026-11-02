@@ -854,6 +854,26 @@ function renderSudokuLevels() {
     container.appendChild(button);
   }
  }
+ function startSudoku(level) {
+  sudokuLevel = level;
+
+  const data = makeSudoku(level);
+  sudokuPuzzle = data.puzzle.map(row => row.slice());
+  sudokuSolution = data.solution.map(row => row.slice());
+
+  sudokuSelected = -1;
+
+  document.getElementById("sudokuLevels").style.display = "none";
+  document.getElementById("sudokuPlay").style.display = "block";
+  document.getElementById("sudokuTitle").textContent = "Level " + level;
+  document.getElementById("sudokuMessage").textContent =
+    "Khaali box select karo aur number bharo.";
+
+  renderSudokuBoard();
+  renderSudokuNumbers();
+
+  window.scrollTo(0, 0);
+ }
 
 function renderSudokuBoard() {
   const board = document.getElementById("sudokuBoard");

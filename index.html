@@ -825,24 +825,35 @@ function renderSudokuLevels() {
     box.appendChild(btn);
   }
 }
+ function renderSudokuLevels() {
+  const container = document.getElementById("sudokuLevels");
 
-function startSudoku(level) {
-  sudokuLevel = level;
-  const game = makeSudoku(level);
-  sudokuPuzzle = game.puzzle.map(row => row.slice());
-  sudokuSolution = game.solution;
-  sudokuSelected = -1;
+  if (!container) {
+    alert("Sudoku levels container nahi mila.");
+    return;
+  }
 
-  document.getElementById("sudokuPlay").style.display = "block";
-  document.getElementById("sudokuTitle").textContent =
-    "Sudoku Level " + level;
+  container.innerHTML = "";
 
-  document.getElementById("sudokuMessage").textContent =
-    "Select an empty box, then choose a number.";
+  for (let level = 1; level <= 1000; level++) {
+    const button = document.createElement("button");
+    button.className = "level-btn";
 
-  renderSudokuBoard();
-  renderSudokuNumbers();
-}
+    const unlocked = level === 1 ||
+      level <= (sudokuProgress.completed + 1);
+
+    button.textContent = unlocked ? level : "🔒";
+    button.disabled = !unlocked;
+
+    if (unlocked) {
+      button.addEventListener("click", function () {
+        startSudoku(level);
+      });
+    }
+
+    container.appendChild(button);
+  }
+ }
 
 function renderSudokuBoard() {
   const board = document.getElementById("sudokuBoard");

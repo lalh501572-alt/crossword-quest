@@ -329,6 +329,19 @@ header {
  <div class="feedback" id="feedback" aria-live="polite"></div>
  <div class="actions"><button class="quiet" id="prevBtn">Previous</button><button class="primary" id="nextBtn">Next level →</button></div>
 </section>
+ <section id="sudokuScreen" class="panel" style="display:none">
+  <button class="quiet" onclick="showHub()">← Home</button>
+  <h2>🔢 Sudoku Quest</h2>
+  <p>1,000 levels • 5 difficulty stages</p>
+  <div id="sudokuLevels"></div>
+
+  <div id="sudokuPlay" style="display:none">
+    <h3 id="sudokuTitle">Level 1</h3>
+    <div id="sudokuBoard"></div>
+    <div id="sudokuNumbers"></div>
+    <p id="sudokuMessage"></p>
+  </div>
+ </section>
 <footer>Crossword Quest • Free to play<br>Created by Harilal Kumar</footer>
 </main>
 <script>

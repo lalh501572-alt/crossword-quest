@@ -794,11 +794,19 @@ function makeSudoku(level) {
   const puzzle = base.map(row => row.slice());
 
   const seed = level * 7919;
-  let blanks = 30 + (Math.floor((level - 1) / 200) * 5);
+  const blanks = Math.min(60, 30 + Math.floor((level - 1) / 200) * 5);
+  const cells = Array.from({length:81}, (_,i) => i);
+
+  // Deterministic shuffle for each level
+  for (let i = cells.length - 1; i > 0; i--) {
+    const j = (seed + i * 17 + i * i) % (i + 1);
+    [cells[i], cells[j]] = [cells[j], cells[i]];
+  }
 
   for (let i = 0; i < blanks; i++) {
-    const r = (seed + i * 17 + i * i) % 9;
-    const c = (seed * 3 + i * 11 + i * i * 2) % 9;
+    const cell = cells[i];
+    const r = Math.floor(cell / 9);
+    const c = cell % 9;
     puzzle[r][c] = 0;
   }
 

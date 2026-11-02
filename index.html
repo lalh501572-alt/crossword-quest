@@ -403,13 +403,12 @@ header {
  </div>
  <div class="note">This free version saves progress on this device. It works in your browser and does not need an account.</div>
 </section>
-<section id="game" class="panel">
- <div class="gamehead"><button class="quiet" id="backBtn">← Levels</button><div style="text-align:right"><div class="small" id="difficulty">BEGINNER</div><h2 id="levelTitle">Level 1</h2></div></div>
- <div class="progress"><div class="bar" id="progressBar"></div></div>
- <div id="puzzle"></div>
- <div class="actions"><button class="secondary" id="hintBtn">💡 Hint</button><button class="quiet" id="revealBtn">Reveal answer</button><button class="primary" id="checkBtn">Check answers</button></div>
- <div class="feedback" id="feedback" aria-live="polite"></div>
- <div class="actions"><button class="quiet" id="prevBtn">Previous</button><button class="primary" id="nextBtn">Next level →</button></div>
+<div id="sudokuPlay" style="display:none">
+  <h3 id="sudokuTitle">Level 1</h3>
+  <div id="sudokuBoard"></div>
+  <div id="sudokuNumbers"></div>
+  <p id="sudokuMessage"></p>
+</div>
 </section>
 <footer>
   Crossword Quest • Free to play<br>

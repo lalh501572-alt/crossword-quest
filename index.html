@@ -821,149 +821,200 @@ loginRewardButton.onclick = function () {
 };
 
 updateLoginReward();
- // ===== SUDOKU QUEST =====
-const SUDOKU_KEY = "crosswordSudoku1000_v1";
+ // ===== ADVANCED SUDOKU QUEST =====
+
 let sudokuLevel = 1;
-let sudokuPuzzle = [];
+let sudokuCompleted = Number(localStorage.getItem("sudokuCompleted") || 0);
 let sudokuSolution = [];
+let sudokuPuzzle = [];
 let sudokuSelected = -1;
-let sudokuProgress = JSON.parse(localStorage.getItem(SUDOKU_KEY) || '{"completed":0}');
+let sudokuMistakes = 0;
+let sudokuSeconds = 0;
+let sudokuTimerInterval = null;
+let sudokuNotesMode = false;
+let sudokuNotes = {};
+let sudokuUndo = [];
+let sudokuStarted = false;
 
 function openSudoku() {
+  document.getElementById("home").style.display = "none";
   document.getElementById("game").style.display = "none";
   document.getElementById("sudokuScreen").style.display = "block";
   document.getElementById("sudokuPlay").style.display = "none";
   renderSudokuLevels();
-  window.scrollTo(0, 0);
 }
 
 function showHub() {
+  clearInterval(sudokuTimerInterval);
   document.getElementById("sudokuScreen").style.display = "none";
-  document.getElementById("game").style.display = "block";
-  window.scrollTo(0, 0);
+  document.getElementById("game").style.display = "none";
+  document.getElementById("home").style.display = "block";
 }
 
 function makeSudoku(level) {
-  const base = [
-    [1,2,3,4,5,6,7,8,9],
-    [4,5,6,7,8,9,1,2,3],
-    [7,8,9,1,2,3,4,5,6],
-    [2,3,4,5,6,7,8,9,1],
-    [5,6,7,8,9,1,2,3,4],
-    [8,9,1,2,3,4,5,6,7],
-    [3,4,5,6,7,8,9,1,2],
-    [6,7,8,9,1,2,3,4,5],
-    [9,1,2,3,4,5,6,7,8]
-  ];
+  const base = 3;
+  const side = 9;
 
-  const solution = base.map(row => row.slice());
-  const puzzle = base.map(row => row.slice());
+  const pattern = (r, c) =>
+    (base * (r % base) + Math.floor(r / base) + c) % side;
 
-  const seed = level * 7919;
-  const blanks = Math.min(60, 30 + Math.floor((level - 1) / 200) * 5);
-  const cells = Array.from({length:81}, (_,i) => i);
+  const shuffle = arr => {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  };
 
-  // Deterministic shuffle for each level
-  for (let i = cells.length - 1; i > 0; i--) {
-    const j = (seed + i * 17 + i * i) % (i + 1);
-    [cells[i], cells[j]] = [cells[j], cells[i]];
-  }
+  const groups = shuffle([0, 1, 2]);
+  const rows = groups.flatMap(g =>
+    shuffle([0, 1, 2]).map(r => g * 3 + r)
+  );
 
-  for (let i = 0; i < blanks; i++) {
-    const cell = cells[i];
-    const r = Math.floor(cell / 9);
-    const c = cell % 9;
-    puzzle[r][c] = 0;
-  }
+  const colGroups = shuffle([0, 1, 2]);
+  const cols = colGroups.flatMap(g =>
+    shuffle([0, 1, 2]).map(c => g * 3 + c)
+  );
 
-  return { puzzle, solution };
+  const nums = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+
+  const solution = rows.map(r =>
+    cols.map(c => nums[pattern(r, c)])
+  );
+
+  const difficulty =
+    document.getElementById("sudokuDifficulty").value;
+
+  const blanks = {
+    easy: 35,
+    medium: 43,
+    hard: 50,
+    expert: 55
+  };
+
+  const puzzle = solution.map(row => row.slice());
+  let empty = blanks[difficulty] || 35;
+
+  const positions = shuffle(
+    Array.from({ length: 81 }, (_, i) => i)
+  );
+
+  positions.slice(0, empty).forEach(i => {
+    puzzle[Math.floor(i / 9)][i % 9] = 0;
+  });
+
+  return { solution, puzzle };
 }
- 
- function renderSudokuLevels() {
+
+function renderSudokuLevels() {
+  clearInterval(sudokuTimerInterval);
+
+  document.getElementById("sudokuPlay").style.display = "none";
+  document.getElementById("sudokuLevels").style.display = "grid";
+
   const container = document.getElementById("sudokuLevels");
-
-  if (!container) {
-    alert("Sudoku levels container nahi mila.");
-    return;
-  }
-
   container.innerHTML = "";
 
-  for (let level = 1; level <= 1000; level++) {
-    const button = document.createElement("button");
-    button.className = "level-btn";
+  for (let i = 1; i <= 1000; i++) {
+    const btn = document.createElement("button");
+    btn.textContent = i;
 
-    const unlocked = level === 1 ||
-      level <= (sudokuProgress.completed + 1);
+    const unlocked = i <= sudokuCompleted + 1;
+    btn.disabled = !unlocked;
+    btn.style.background = unlocked ? "#6366f1" : "#94a3b8";
+    btn.style.color = "white";
+    btn.style.padding = "12px 4px";
+    btn.style.borderRadius = "9px";
 
-    button.textContent = unlocked ? level : "🔒";
-    button.disabled = !unlocked;
-
-    if (unlocked) {
-      button.addEventListener("click", function () {
-        startSudoku(level);
-      });
+    if (i <= sudokuCompleted) {
+      btn.textContent = "✓ " + i;
     }
 
-    container.appendChild(button);
+    btn.onclick = () => startSudoku(i);
+    container.appendChild(btn);
   }
- }
- function startSudoku(level) {
-  document.getElementById("home").style.display = "none";
-document.getElementById("game").style.display = "none";
+}
+
+function startSudoku(level) {
   sudokuLevel = level;
-
-  const data = makeSudoku(level);
-  sudokuPuzzle = data.puzzle.map(row => row.slice());
-  sudokuSolution = data.solution.map(row => row.slice());
-
+  sudokuMistakes = 0;
+  sudokuSeconds = 0;
   sudokuSelected = -1;
+  sudokuNotes = {};
+  sudokuUndo = [];
+  sudokuNotesMode = false;
+  sudokuStarted = true;
+
+  const result = makeSudoku(level);
+  sudokuSolution = result.solution;
+  sudokuPuzzle = result.puzzle;
 
   document.getElementById("sudokuLevels").style.display = "none";
   document.getElementById("sudokuPlay").style.display = "block";
   document.getElementById("sudokuTitle").textContent = "Level " + level;
-  document.getElementById("sudokuMessage").textContent =
-    "Khaali box select karo aur number bharo.";
+  document.getElementById("sudokuMistakes").textContent = "0 / 3";
+  document.getElementById("sudokuMessage").textContent = "";
+  document.getElementById("sudokuNextBtn").style.display = "none";
+  document.getElementById("noteBtn").textContent = "✏️ Pencil Notes: OFF";
 
   renderSudokuBoard();
   renderSudokuNumbers();
+  startSudokuTimer();
+}
 
-  window.scrollTo(0, 0);
- }
+function startSudokuTimer() {
+  clearInterval(sudokuTimerInterval);
+
+  sudokuTimerInterval = setInterval(() => {
+    sudokuSeconds++;
+
+    const min = String(Math.floor(sudokuSeconds / 60)).padStart(2, "0");
+    const sec = String(sudokuSeconds % 60).padStart(2, "0");
+
+    document.getElementById("sudokuTimer").textContent =
+      min + ":" + sec;
+  }, 1000);
+}
 
 function renderSudokuBoard() {
   const board = document.getElementById("sudokuBoard");
   board.innerHTML = "";
 
-  for (let r = 0; r < 9; r++) {
-    for (let c = 0; c < 9; c++) {
-      const index = r * 9 + c;
-      const cell = document.createElement("button");
-      cell.className = "sudoku-cell";
+  for (let i = 0; i < 81; i++) {
+    const r = Math.floor(i / 9);
+    const c = i % 9;
+    const value = sudokuPuzzle[r][c];
 
-      if (sudokuPuzzle[r][c] !== 0) {
-        cell.textContent = sudokuPuzzle[r][c];
-        cell.style.color = "#312e81";
-      } else {
-        cell.textContent = "";
-      }
+    const cell = document.createElement("button");
+    cell.className = "sudoku-cell";
+    cell.textContent = value || "";
 
-      if (index === sudokuSelected) {
-        cell.classList.add("selected");
-      }
-
-      if (c === 2 || c === 5) cell.style.borderRight = "3px solid #312e81";
-      if (r === 2 || r === 5) cell.style.borderBottom = "3px solid #312e81";
-
-      cell.onclick = () => {
-        if (sudokuPuzzle[r][c] === 0) {
-          sudokuSelected = index;
-          renderSudokuBoard();
-        }
-      };
-
-      board.appendChild(cell);
+    if (value) {
+      cell.style.color = "#111827";
+      cell.style.background = "#e2e8f0";
     }
+
+    if (i === sudokuSelected) {
+      cell.classList.add("selected");
+    }
+
+    if (r % 3 === 0) cell.style.borderTopWidth = "3px";
+    if (c % 3 === 0) cell.style.borderLeftWidth = "3px";
+    if (r === 8) cell.style.borderBottomWidth = "3px";
+    if (c === 8) cell.style.borderRightWidth = "3px";
+
+    if (sudokuNotes[i]) {
+      cell.textContent = sudokuNotes[i].join(" ");
+      cell.style.fontSize = "11px";
+    }
+
+    cell.onclick = () => {
+      sudokuSelected = i;
+      renderSudokuBoard();
+    };
+
+    board.appendChild(cell);
   }
 }
 
@@ -977,53 +1028,159 @@ function renderSudokuNumbers() {
     btn.onclick = () => enterSudokuNumber(n);
     box.appendChild(btn);
   }
+}
 
-  const clear = document.createElement("button");
-  clear.textContent = "Clear";
-  clear.onclick = () => enterSudokuNumber(0);
-  box.appendChild(clear);
+function saveSudokuUndo() {
+  sudokuUndo.push({
+    puzzle: sudokuPuzzle.map(row => row.slice()),
+    notes: JSON.parse(JSON.stringify(sudokuNotes))
+  });
 
-  const check = document.createElement("button");
-  check.textContent = "Check";
-  check.onclick = checkSudoku;
-  box.appendChild(check);
+  if (sudokuUndo.length > 50) sudokuUndo.shift();
 }
 
 function enterSudokuNumber(number) {
   if (sudokuSelected < 0) {
     document.getElementById("sudokuMessage").textContent =
-      "Pehle ek khaali box select karo.";
+      "Pehle board ka ek empty cell select karo.";
     return;
   }
 
   const r = Math.floor(sudokuSelected / 9);
   const c = sudokuSelected % 9;
 
-  sudokuPuzzle[r][c] = number;
+  if (sudokuPuzzle[r][c] !== 0) return;
+
+  saveSudokuUndo();
+
+  if (sudokuNotesMode) {
+    sudokuNotes[sudokuSelected] =
+      sudokuNotes[sudokuSelected] || [];
+
+    if (sudokuNotes[sudokuSelected].includes(number)) {
+      sudokuNotes[sudokuSelected] =
+        sudokuNotes[sudokuSelected].filter(n => n !== number);
+    } else {
+      sudokuNotes[sudokuSelected].push(number);
+    }
+  } else {
+    sudokuPuzzle[r][c] = number;
+    delete sudokuNotes[sudokuSelected];
+
+    if (number !== sudokuSolution[r][c]) {
+      sudokuMistakes++;
+      document.getElementById("sudokuMistakes").textContent =
+        sudokuMistakes + " / 3";
+
+      if (sudokuMistakes >= 3) {
+        document.getElementById("sudokuMessage").textContent =
+          "3 mistakes ho gayi. Is level ko dobara try karo.";
+        clearInterval(sudokuTimerInterval);
+        return;
+      }
+    }
+
+    checkSudoku();
+  }
+
   renderSudokuBoard();
 }
 
 function checkSudoku() {
+  let correct = true;
+  let filled = true;
+
   for (let r = 0; r < 9; r++) {
     for (let c = 0; c < 9; c++) {
-      if (sudokuPuzzle[r][c] !== sudokuSolution[r][c]) {
-        document.getElementById("sudokuMessage").textContent =
-          "Abhi kuch numbers galat ya khaali hain. Dobara try karo!";
-        return;
+      if (sudokuPuzzle[r][c] === 0) {
+        filled = false;
+      } else if (sudokuPuzzle[r][c] !== sudokuSolution[r][c]) {
+        correct = false;
       }
     }
   }
 
-  if (sudokuLevel > sudokuProgress.completed) {
-    sudokuProgress.completed = sudokuLevel;
-    localStorage.setItem(SUDOKU_KEY, JSON.stringify(sudokuProgress));
+  if (filled && correct) {
+    clearInterval(sudokuTimerInterval);
+
+    sudokuCompleted = Math.max(sudokuCompleted, sudokuLevel);
+    localStorage.setItem("sudokuCompleted", sudokuCompleted);
+
+    document.getElementById("sudokuMessage").textContent =
+      "🎉 Level Complete! Excellent work!";
+
+    document.getElementById("sudokuNextBtn").style.display = "block";
+  } else {
+    document.getElementById("sudokuMessage").textContent =
+      filled ? "Kuch answers galat hain. Dobara check karo." :
+      "Abhi puzzle complete nahi hua hai.";
+  }
+}
+
+function eraseSudoku() {
+  if (sudokuSelected < 0) return;
+
+  const r = Math.floor(sudokuSelected / 9);
+  const c = sudokuSelected % 9;
+
+  if (sudokuPuzzle[r][c] !== 0) return;
+
+  saveSudokuUndo();
+  delete sudokuNotes[sudokuSelected];
+  renderSudokuBoard();
+}
+
+function undoSudoku() {
+  const previous = sudokuUndo.pop();
+
+  if (!previous) return;
+
+  sudokuPuzzle = previous.puzzle;
+  sudokuNotes = previous.notes;
+  renderSudokuBoard();
+}
+
+function hintSudoku() {
+  const empty = [];
+
+  for (let r = 0; r < 9; r++) {
+    for (let c = 0; c < 9; c++) {
+      if (sudokuPuzzle[r][c] === 0) {
+        empty.push(r * 9 + c);
+      }
+    }
   }
 
-  document.getElementById("sudokuMessage").textContent =
-    "🎉 Level Complete! Next level unlock ho gaya.";
+  if (!empty.length) return;
 
-  renderSudokuLevels();
-  }
+  const i = empty[Math.floor(Math.random() * empty.length)];
+  sudokuSelected = i;
+  saveSudokuUndo();
+
+  sudokuPuzzle[Math.floor(i / 9)][i % 9] =
+    sudokuSolution[Math.floor(i / 9)][i % 9];
+
+  delete sudokuNotes[i];
+  renderSudokuBoard();
+  checkSudoku();
+}
+
+document.getElementById("noteBtn").onclick = () => {
+  sudokuNotesMode = !sudokuNotesMode;
+  document.getElementById("noteBtn").textContent =
+    "✏️ Pencil Notes: " + (sudokuNotesMode ? "ON" : "OFF");
+};
+
+document.getElementById("eraseBtn").onclick = eraseSudoku;
+document.getElementById("undoBtn").onclick = undoSudoku;
+document.getElementById("hintSudokuBtn").onclick = hintSudoku;
+document.getElementById("checkSudokuBtn").onclick = checkSudoku;
+
+document.getElementById("sudokuLevelsBtn").onclick = renderSudokuLevels;
+
+document.getElementById("sudokuNextBtn").onclick = () => {
+  startSudoku(sudokuLevel + 1);
+};
 </script>
 <script>
 if ("serviceWorker" in navigator) {

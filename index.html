@@ -403,41 +403,52 @@ header {
  </div>
  <div class="note">This free version saves progress on this device. It works in your browser and does not need an account.</div>
 </section>
-<!-- SUDOKU GAME SCREEN -->
- <!-- CROSSWORD GAME SCREEN -->
-<section id="game" class="panel" style="display:none">
-  <div class="gamehead">
-    <div>
-      <h2 id="levelTitle">Level 1</h2>
-      <div class="small" id="difficulty">BEGINNER</div>
-    </div>
-    <button class="quiet" id="backBtn">← Home</button>
-  </div>
-  <div class="progress"><div class="bar" id="progressBar"></div></div>
-  <div id="puzzle"></div>
-  <div class="feedback" id="feedback"></div>
-  <div class="actions">
-    <button class="secondary" id="hintBtn">💡 Hint (10 coins)</button>
-    <button class="secondary" id="revealBtn">Reveal</button>
-    <button class="primary" id="checkBtn">Check Answers</button>
-  </div>
-  <div class="actions">
-    <button class="quiet" id="prevBtn">← Previous</button>
-    <button class="primary" id="nextBtn">Next Level →</button>
-  </div>
-</section>
+
+<!-- ADVANCED SUDOKU GAME SCREEN -->
 <section id="sudokuScreen" class="panel" style="display:none">
   <button class="quiet" onclick="showHub()">← Home</button>
+
   <h2>🔢 Sudoku Quest</h2>
-  <p>1,000 levels • 5 difficulty stages</p>
+  <p>1000 Levels • Advanced Brain Challenge</p>
 
   <div id="sudokuLevels"></div>
 
   <div id="sudokuPlay" style="display:none">
     <h3 id="sudokuTitle">Level 1</h3>
+
+    <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+      <span>⏱️ Time: <b id="sudokuTimer">00:00</b></span>
+      <span>❌ Mistakes: <b id="sudokuMistakes">0 / 3</b></span>
+    </div>
+
+    <label for="sudokuDifficulty">Difficulty:</label>
+    <select id="sudokuDifficulty">
+      <option value="easy">Easy</option>
+      <option value="medium">Medium</option>
+      <option value="hard">Hard</option>
+      <option value="expert">Expert</option>
+    </select>
+
     <div id="sudokuBoard"></div>
+
     <div id="sudokuNumbers"></div>
+
+    <div class="actions">
+      <button class="secondary" id="noteBtn">✏️ Pencil Notes: OFF</button>
+      <button class="secondary" id="eraseBtn">🧹 Erase</button>
+      <button class="secondary" id="undoBtn">↩️ Undo</button>
+    </div>
+
+    <div class="actions">
+      <button class="secondary" id="hintSudokuBtn">💡 Hint</button>
+      <button class="primary" id="checkSudokuBtn">Check Answers</button>
+    </div>
+
     <p id="sudokuMessage"></p>
+    <button class="primary" id="sudokuNextBtn" style="display:none">
+      Next Level →
+    </button>
+    <button class="quiet" id="sudokuLevelsBtn">← All Levels</button>
   </div>
 </section>
 <footer>

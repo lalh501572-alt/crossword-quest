@@ -11,7 +11,21 @@
 <section class="panel" id="game"><button class="quiet" id="backBtn">← Home</button><h2 id="levelTitle">Crossword Level 1</h2><b id="difficulty">BEGINNER</b><div class="progress"><div class="bar" id="progressBar"></div></div><div id="puzzle"></div><p id="feedback" class="feedback"></p><div class="actions"><button class="secondary" id="hintBtn">💡 Hint</button><button class="secondary" id="revealBtn">👁 Reveal</button><button class="primary" id="checkBtn">✓ Check</button><button class="quiet" id="prevBtn">← Previous</button><button class="primary" id="nextBtn">Next Level →</button></div></section>
 <section class="panel" id="sudokuScreen"><button class="quiet" id="sudokuHomeBtn">← Home</button><h2>🔢 Sudoku Quest</h2><p class="note">1000 levels • Choose an unlocked level</p><div id="sudokuLevels" class="levels"></div><div id="sudokuPlay" style="display:none"><h3 id="sudokuTitle">Level 1</h3><p>⏱ <b id="timer">00:00</b>　❌ Mistakes: <b id="mistakes">0 / 3</b></p><label>Difficulty <select id="difficultySelect"><option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option><option value="expert">Expert</option></select></label><div id="sudokuBoard"></div><div id="sudokuNumbers"></div><div class="actions"><button class="secondary" id="notesBtn">✏️ Notes OFF</button><button class="secondary" id="eraseBtn">Erase</button><button class="secondary" id="undoBtn">Undo</button><button class="secondary" id="sHintBtn">Hint</button><button class="primary" id="sCheckBtn">Check</button></div><p id="sMessage" class="feedback"></p><button class="primary" id="sNextBtn" style="display:none">Next Level →</button><button class="quiet" id="allSudokuBtn">All Levels</button></div></section>
 <section class="panel" id="infoPages" style="display:none"><button class="quiet" id="infoBack">← Home</button><div id="infoContent"></div></section>
-<footer>Crossword Quest & Sudoku Quest • Created by Harilal Kumar<br><div class="actions" style="justify-content:center;margin-top:10px"><button class="quiet" data-page="about">About Us</button><button class="quiet" data-page="privacy">Privacy Policy</button><button class="quiet" data-page="terms">Terms & Conditions</button><button class="quiet" data-page="disclaimer">Disclaimer</button><button class="quiet" data-page="contact">Contact Us</button></div></footer></main>
+<footer>
+  Crossword Quest & Sudoku Quest
+  <br>
+  Founded by Harilal Kumar
+  <br>
+  <small>Founder & CEO</small>
+  <br>
+  <div class="actions" style="justify-content:center;margin-top:10px">
+    <button class="quiet" data-page="about">About Us</button>
+    <button class="quiet" data-page="privacy">Privacy Policy</button>
+    <button class="quiet" data-page="terms">Terms & Conditions</button>
+    <button class="quiet" data-page="disclaimer">Disclaimer</button>
+    <button class="quiet" data-page="contact">Contact Us</button>
+  </div>
+</footer></main>
 <script>
 "use strict";
 const $=id=>document.getElementById(id),store="cq_sudoku_v1";let data={};try{data=JSON.parse(localStorage.getItem(store)||"{}")}catch(e){}
